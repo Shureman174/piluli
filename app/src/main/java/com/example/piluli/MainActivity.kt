@@ -1,4 +1,4 @@
-package com.example.pillreminder
+package com.example.piluli
 
 import android.Manifest
 import android.app.AlarmManager
