@@ -1,9 +1,9 @@
-package com.example.pillreminder.alarm
+package com.example.piluli.alarm
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.example.pillreminder.data.PreferencesRepository
+import com.example.piluli.data.PreferencesRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

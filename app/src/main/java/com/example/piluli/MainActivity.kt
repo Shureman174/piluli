@@ -19,8 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationManagerCompat
-import com.example.pillreminder.alarm.AlarmReceiver
-import com.example.pillreminder.data.PreferencesRepository
+import com.example..alarm.AlarmReceiver
+import com.example.piluli.data.PreferencesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

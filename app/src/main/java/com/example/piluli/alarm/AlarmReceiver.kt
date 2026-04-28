@@ -1,4 +1,4 @@
-package com.example.pillreminder.alarm
+package com.example.piluli.alarm
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -8,8 +8,8 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.pillreminder.R
-import com.example.pillreminder.data.PreferencesRepository
+import com.example.piluli.R
+import com.example..data.PreferencesRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

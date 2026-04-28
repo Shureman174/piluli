@@ -4,10 +4,10 @@ plugins {
 }
 
 android {
-    namespace = "com.example.pillreminder"
+    namespace = "com.example.piluli"
     compileSdk = 34
     defaultConfig {
-        applicationId = "com.example.pillreminder"
+        applicationId = "com.example.piluli"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

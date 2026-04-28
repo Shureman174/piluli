@@ -1,4 +1,4 @@
-package com.example.pillreminder.data
+package com.example.piluli.data
 
 import android.content.Context
 import androidx.datastore.core.DataStore
