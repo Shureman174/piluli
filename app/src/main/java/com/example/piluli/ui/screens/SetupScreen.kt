@@ -8,12 +8,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SetupScreen(onSave: (Int, Int, Int, Int, Boolean) -> Unit) {
-    var pillCount by remember { mutableStateOf("21") }
-    var currentPill by remember { mutableStateOf("1") }
-    var hour by remember { mutableStateOf("9") }
-    var minute by remember { mutableStateOf("0") }
-    var isLoop by remember { mutableStateOf(true) }
+fun SetupScreen(
+    settings: Map<String, Any>,
+    onSave: (Int, Int, Int, Int, Int, Boolean) -> Unit,
+    onBackToHome: () -> Unit
+) {
+    var pillCount by remember { mutableStateOf((settings["pillCount"] as? Int ?: 21).toString()) }
+    var currentPill by remember { mutableStateOf((settings["currentPill"] as? Int ?: 1).toString()) }
+    var hour by remember { mutableStateOf((settings["reminderHour"] as? Int ?: 9).toString()) }
+    var minute by remember { mutableStateOf((settings["reminderMinute"] as? Int ?: 0).toString()) }
+    var dosesPerDay by remember { mutableStateOf((settings["dosesPerDay"] as? Int ?: 1).toString()) }
+    var isLoop by remember { mutableStateOf(settings["isLoop"] as? Boolean ?: true) }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -49,6 +54,12 @@ fun SetupScreen(onSave: (Int, Int, Int, Int, Boolean) -> Unit) {
                 modifier = Modifier.weight(1f)
             )
         }
+        OutlinedTextField(
+            value = dosesPerDay,
+            onValueChange = { dosesPerDay = it },
+            label = { Text("Интенсивность (раз в день)") },
+            modifier = Modifier.fillMaxWidth()
+        )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Switch(checked = isLoop, onCheckedChange = { isLoop = it })
             Text("Повторять по кругу", modifier = Modifier.padding(start = 8.dp))
@@ -61,12 +72,16 @@ fun SetupScreen(onSave: (Int, Int, Int, Int, Boolean) -> Unit) {
                     currentPill.toIntOrNull() ?: 1,
                     hour.toIntOrNull() ?: 9,
                     minute.toIntOrNull() ?: 0,
+                    dosesPerDay.toIntOrNull() ?: 1,
                     isLoop
                 )
             },
             modifier = Modifier.fillMaxWidth().padding(top = 24.dp)
         ) {
             Text("Сохранить и начать")
+        }
+        if ((settings["isFirstRun"] as? Boolean) == false) {
+            TextButton(onClick = onBackToHome) { Text("Назад") }
         }
     }
 }

@@ -14,9 +14,24 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     val settings = DataStoreManager.getSettingsFlow(application)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
 
-    fun saveSettings(pillCount: Int, currentPill: Int, hour: Int, minute: Int, isLoop: Boolean) {
+    fun saveSettings(
+        pillCount: Int,
+        currentPill: Int,
+        hour: Int,
+        minute: Int,
+        dosesPerDay: Int,
+        isLoop: Boolean
+    ) {
         viewModelScope.launch {
-            DataStoreManager.saveSettings(getApplication(), pillCount, currentPill, hour, minute, isLoop)
+            DataStoreManager.saveSettings(
+                getApplication(),
+                pillCount,
+                currentPill,
+                hour,
+                minute,
+                dosesPerDay,
+                isLoop
+            )
             ReminderScheduler.scheduleReminder(getApplication(), hour, minute)
         }
     }
@@ -25,5 +40,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             DataStoreManager.incrementPill(getApplication())
         }
+    }
+
+    fun postponeBy15Minutes() {
+        ReminderScheduler.scheduleReminderInMinutes(getApplication(), 15)
     }
 }
