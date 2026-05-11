@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.piluli.medications.ui.MedApp
 import com.example.piluli.ui.screens.HomeScreen
 import com.example.piluli.ui.screens.SetupScreen
 import com.example.piluli.ui.viewmodel.AppViewModel
@@ -35,17 +36,7 @@ fun MainScreen(viewModel: AppViewModel = viewModel()) {
     val settings by viewModel.settings.collectAsState()
     val isFirstRun = settings["isFirstRun"] as? Boolean ?: true
 
-    if (isFirstRun) {
-        SetupScreen(
-            onSave = { pillCount, currentPill, hour, minute, isLoop ->
-                viewModel.saveSettings(pillCount, currentPill, hour, minute, isLoop)
-            }
-        )
-    } else {
-        HomeScreen(
-            currentPill = (settings["currentPill"] as? Int) ?: 1,
-            pillCount = (settings["pillCount"] as? Int) ?: 21,
-            onManualConfirm = { viewModel.manualIncrement() }
-        )
-    }
+    // Старый сценарий (1 таблетка в день) пока оставляем, но новым главным экраном делаем справочник.
+    // Вернёмся и аккуратно интегрируем/удалим после стабилизации "Препараты + журнал".
+    MedApp(modifier = Modifier.fillMaxSize())
 }
