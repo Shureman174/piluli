@@ -1,0 +1,19 @@
+# Кэш и настройки среды разработки
+.gradle/
+.idea/
+*.iml
+
+# Папки сборки (в корне и внутри модулей)
+build/
+**/build/
+app/build/
+
+# Локальные настройки и ключи
+local.properties
+.egl/
+*.keystore
+*.jks
+
+# Логи и отчеты об ошибках
+*.log
+captures/
