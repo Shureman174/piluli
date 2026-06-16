@@ -10,6 +10,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.piluli.ui.screens.HomeScreen
@@ -34,18 +37,26 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(viewModel: AppViewModel = viewModel()) {
     val settings by viewModel.settings.collectAsState()
     val isFirstRun = settings["isFirstRun"] as? Boolean ?: true
+    var isEditingSettings by remember { mutableStateOf(false) }
 
-    if (isFirstRun) {
+    if (isFirstRun || isEditingSettings) {
         SetupScreen(
-            onSave = { pillCount, currentPill, hour, minute, isLoop ->
-                viewModel.saveSettings(pillCount, currentPill, hour, minute, isLoop)
-            }
+            settings = settings,
+            onSave = { pillCount, currentPill, hour, minute, dosesPerDay, isLoop ->
+                viewModel.saveSettings(pillCount, currentPill, hour, minute, dosesPerDay, isLoop)
+                isEditingSettings = false
+            },
+            onBackToHome = { isEditingSettings = false }
         )
     } else {
         HomeScreen(
             currentPill = (settings["currentPill"] as? Int) ?: 1,
             pillCount = (settings["pillCount"] as? Int) ?: 21,
-            onManualConfirm = { viewModel.manualIncrement() }
+            dosesPerDay = (settings["dosesPerDay"] as? Int) ?: 1,
+            lastTakenAt = (settings["lastTakenAt"] as? Long) ?: 0L,
+            onManualConfirm = { viewModel.manualIncrement() },
+            onPostpone = { viewModel.postponeBy15Minutes() },
+            onOpenSettings = { isEditingSettings = true }
         )
     }
 }

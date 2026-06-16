@@ -30,8 +30,7 @@ class ReminderReceiver : BroadcastReceiver() {
                 }
             }
             ACTION_POSTPONE -> {
-                // Упрощённо: просто покажем уведомление снова
-                NotificationHelper.showNotification(context)
+                ReminderScheduler.scheduleReminderInMinutes(context, 15)
             }
             else -> {
                 NotificationHelper.showNotification(context)
