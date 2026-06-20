@@ -1,25 +1,30 @@
 # PROJECT_AI_RULES.md
 
-## 🛠 Core Architecture & Technology Stack
-- **Language:** Kotlin only (No Java snippets).
-- **UI Framework:** Jetpack Compose ONLY. No XML layout files allowed.
-- **Architecture:** MVVM + Repository Pattern.
-- **Asynchronous:** Coroutines + Flow. Use `StateFlow` strictly for UI state; avoid LiveData.
-- **Design System:** Material 3.
-- **Build System:** Gradle Kotlin DSL.
+## 🛠 Основная архитектура и технологический стек
+- ** Язык: ** только Kotlin (без фрагментов Java).
+- ** Платформа пользовательского интерфейса:** ТОЛЬКО Jetpack Compose. Файлы макета XML не разрешены.
+- **Архитектура: ** MVVM + шаблон репозитория.
+- ** Асинхронность: ** Сопрограммы + поток. Используйте `StateFlow" строго для состояния пользовательского интерфейса; избегайте LiveData.
+- **Система проектирования:** Материал 3.
+- **Система сборки:** Gradle Kotlin DSL.
 
-## 🏗 Development Standards
-- **Principles:** Follow SOLID, DRY (Don't Repeat Yourself), and KISS (Keep It Simple, Stupid).
-- **Code Style:** Use modern Kotlin idiomatic expressions.
-- **Data Layer:** Implement Repository Pattern to abstract data sources (Room/DataStore).
-- **State Management:** Ensure UI state is immutable and flows through ViewModels safely.
+## 🏗 Стандарты разработки
+- **Принципы:** следуйте принципам SOLID, DRY (не повторяйся) и KISS (не усложняй).
+- **Стиль кода:** используйте современные идиоматические выражения Kotlin.
+- **Уровень данных:** реализуйте шаблон репозитория для абстрагирования источников данных (Room/DataStore).
+- **Управление состоянием:** убедитесь, что состояние пользовательского интерфейса неизменяемо и безопасно передается через модели представления.
 
-## 🚫 Constraints & Restrictions
-1.  **No XML Support:** All components must be rendered with `@Composable`.
-2.  **Modern Concurrency:** Use `viewModelScope` or `lifecycleScope`. Do not use `GlobalScope`.
-3.  **Persistence:** Favor offline-first capabilities using local databases (Room/DataStore).
-4.  **Clean Code:** Separate business logic from presentation layers clearly.
+## 🚫 Ограничения и запреты
+1.  **Отсутствие поддержки XML:** все компоненты должны отображаться с помощью `@Composable`.
+2.  **Современный подход к параллельной обработке:** используйте `viewModelScope` или `lifecycleScope`. Не используйте `GlobalScope`.
+3.  **Персистентность:** отдавайте предпочтение автономным возможностям с использованием локальных баз данных (Room/DataStore).
+4.  **Чистый код:** четко разделяйте бизнес-логику и презентационные уровни.
 
-## 🎯 Long-term Goals
-- Ensure high performance and stability for medical tracking.
-- Build a scalable UI structure for easy addition of new types of medicines.
+## 🎯 Долгосрочные цели
+- Обеспечить высокую производительность и стабильность системы медицинского учета. 
+- Создать масштабируемую структуру пользовательского интерфейса для простого добавления новых видов лекарств.
+
+##  Взаимодейтсиве
+1. Проект расположен в локальной папке: C:\Users\Shureman\Documents\Hermes
+2. Выполняй четко мои запросы. если указано сделай изменения, то это значит что ты должен их сделать и сохранить в проекте, т.е. записать в файл
+ 
