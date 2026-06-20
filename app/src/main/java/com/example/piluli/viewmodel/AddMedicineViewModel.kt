@@ -31,7 +31,7 @@ class AddMedicineViewModel(private val repository: MedicineRepository) : ViewMod
      * Обновляет имя лекарства в состоянии.
      */
     fun updateName(newName: String) {
-        _uiState.value = _uiT.copy(name = newName)
+        _uiState.value = _uiState.value.copy(name = newName)
     }
 
     /**
@@ -67,7 +67,7 @@ class AddMedicineViewModel(private val repository: MedicineRepository) : ViewMod
             return
         }
 
-        viewModel_scope.launch {
+        viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             try {
                 val medicine = Medicine(

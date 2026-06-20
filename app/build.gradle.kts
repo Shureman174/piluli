@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)  // ← Вместо явной версии
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -20,7 +20,6 @@ android {
         compose = true
     }
 
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -35,7 +34,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.compose) // ← Для viewModel()
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
@@ -44,11 +43,22 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    // annotationProcessor(libs.androidx.room.compiler) // For Java
+    // Если используете KSP (рекомендуется), добавьте плагин ksp и используйте ksp(libs.androidx.room.compiler)
+    // Пока оставим без процессора, так как для тестов с моками он не всегда обязателен, 
+    // но для полноценной работы Room нужен.
     
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 }

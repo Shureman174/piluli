@@ -1,11 +1,7 @@
 package com.example.piluli.data
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.as1024 // placeholder if needed, but standard flow is fine
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow._medicines
 
 /**
  * Data model for a Medicine item as defined in the project roadmap.
@@ -25,52 +21,66 @@ data class Medicine(
  * Repository for managing medicine data.
  * Provides a stream of medicines and methods for CRUD operations.
  */
-class MedicineRepository {
-    private val _medicines = MutableStateFlow<List<Medicine>>(emptyList())
-    val medicines: Flow<List<Medicine>> = _medicines
+class MedicineRepository(private val medicineDao: MedicineDao) {
+    val medicines: Flow<List<Medicine>> = medicineDao.getAll().map { entities ->
+        entities.map { it.toDomain() }
+    }
 
     /**
      * Adds a new medicine to the list.
      */
-    fun addMedicine(medicine: Medicine) {
-        val currentList = _medicines.value.toMutableList()
-        currentList.add(medicine)
-        _medicines.value = currentList
+    suspend fun addMedicine(medicine: Medicine) {
+        medicineDao.insert(medicine.toEntity())
     }
 
     /**
      * Updates an existing medicine (e.g., for editing - Task 102).
      */
-    fun updateMedicine(id: String, updatedMedicine: Medicine) {
-        val list = _medicines.value.toMutableList()
-        val index = list.indexOfFirst { it.id == id }
-        if (index != -1) {
-            list[index] = updatedMedicine
-            _medicines.value = list
-        }
+    suspend fun updateMedicine(id: String, updatedMedicine: Medicine) {
+        medicineDao.insert(updatedMedicine.toEntity())
     }
 
     /**
      * Removes a medicine from the list.
      */
-    fun removeMedicine(id: String) {
-        val list = _medicines.value.toMutableList()
-        list.removeAll { it.id == id }
-        _medicines.value = list
+    suspend fun removeMedicine(id: String) {
+        val entity = medicineDao.getById(id)
+        if (entity != null) {
+            medicineDao.delete(entity)
+        }
     }
 
     /**
      * Decrements stock after consumption (Requirement 125).
      */
-    fun consumeMedicine(medicineId: String) {
-        val list = _medicines.value.toMutableList()
-        val index = list.indexOfFirst { it.id == medicineId }
-        if (index != -1) {
-            val m = list[index]
-            if (m.totalStock > 0) {
-                list[index] = m.copy(totalStock = m.totalStock - 1)
-                _medicines.value = list
-            }
+    suspend fun consumeMedicine(medicineId: String) {
+        val entity = medicineDao.getById(medicineId)
+        if (entity != null && entity.totalStock > 0) {
+            medicineDao.insert(entity.copy(totalStock = entity.totalStock - 1))
         }
     }
+
+    suspend fun getMedicineById(id: String): Medicine? {
+        return medicineDao.getById(id)?.toDomain()
+    }
 }
+
+fun MedicineEntity.toDomain() = Medicine(
+    id = id,
+    name = name,
+    dosageValue = dosageValue,
+    dosageUnit = dosageUnit,
+    totalStock = totalStock,
+    imagePath = imagePath,
+    notes = notes
+)
+
+fun Medicine.toEntity() = MedicineEntity(
+    id = id,
+    name = name,
+    dosageValue = dosageValue,
+    dosageUnit = dosageUnit,
+    totalStock = totalStock,
+    imagePath = imagePath,
+    notes = notes
+)
