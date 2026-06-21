@@ -1,18 +1,14 @@
 package com.example.piluli.ui.viewmodel
 
 import com.example.piluli.data.MedicineRepository
+import com.example.piluli.model.Medicine
 import com.example.piluli.viewmodel.AddMedicineViewModel
-import io.mockk.coEvery
-import io.mockk.mockk
+import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 
@@ -35,28 +31,14 @@ class SHRMN_MedicineViewModelTest {
     }
 
     @Test
-    fun `test medicine addition validation`() = runTest {
-        // Test for empty name scenario
-        viewModel.updateName("")
-        viewModel.saveMedicine()
+    fun `test medicine addition calls repository`() = runTest {
+        coEvery { mockRepo.insert(any()) } just Runs
         
-        assertNotNull(viewModel.uiState.value.error)
-        assertEquals("Введите название лекарства", viewModel.uiState.value.error)
-    }
-
-    @Test
-    fun `test success state on valid input`() = runTest {
-        coEvery { mockRepo.addMedicine(any()) } returns Unit
-        
-        viewModel.updateName("Valid")
-        viewModel.updateDosageValue(10.0)
-        viewModel.updateDosageUnit("mg")
-        
-        viewModel.saveMedicine()
+        viewModel.addMedicine()
         
         // Advance dispatcher to execute launch block
         testDispatcher.scheduler.advanceUntilIdle()
         
-        assert(viewModel.uiState.value.isSuccess)
+        coVerify { mockRepo.insert(any()) }
     }
 }

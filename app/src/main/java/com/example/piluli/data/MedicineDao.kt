@@ -1,29 +1,27 @@
 package com.example.piluli.data
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
+import com.example.piluli.model.Medicine
 
 @Dao
 interface MedicineDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(medicine: MedicineEntity): Long
+    @Query("SELECT * FROM medicine_table")
+    fun getAllMedicines(): Flow<List<Medicine>>
 
-    @Query("SELECT * FROM medicines WHERE id = :id")
-    suspend fun getById(id: String): MedicineEntity?
+    @Query("SELECT * FROM medicine_table WHERE id = :id")
+    fun getMedicineById(id: String): Flow<Medicine>
 
-    @Query("SELECT * FROM medicines")
-    fun getAll(): kotlinx.coroutines.flow.Flow<List<MedicineEntity>>
+    @Insert
+    suspend fun insertMedicine(medicine: Medicine)
+
+    @Update
+    suspend fun updateMedicine(medicine: Medicine)
 
     @Delete
-    suspend fun delete(medicine: MedicineEntity)
+    suspend fun deleteMedicine(medicine: Medicine)
 }
-
-@Entity(tableName = "medicines")
-data class MedicineEntity(
-    @PrimaryKey val id: String,
-    val name: String,
-    val dosageValue: Double,
-    val dosageUnit: String,
-    val totalStock: Int,
-    val imagePath: String?,
-    val notes: String?
-)
