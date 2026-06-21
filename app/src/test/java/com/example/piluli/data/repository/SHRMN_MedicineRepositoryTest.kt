@@ -3,6 +3,7 @@ package com.example.piluli.data.repository
 import com.example.piluli.model.Medicine
 import com.example.piluli.data.MedicineDao
 import com.example.piluli.data.MedicineRepository
+import com.example.piluli.data.toEntity
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -48,7 +49,8 @@ class SHRMN_MedicineRepositoryTest {
             dosage = "10 mg",
             frequency = "Daily"
         )
-        coEvery { mockDao.getMedicineById("1") } returns flowOf(medicine)
+        val entity = medicine.toEntity()
+        every { mockDao.getMedicineById("1") } returns flowOf(entity)
 
         val result = repository.getMedicineById("1").first()
         assertEquals("Sample", result.name)

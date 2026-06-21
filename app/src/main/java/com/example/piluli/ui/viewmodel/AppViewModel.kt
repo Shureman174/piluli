@@ -7,6 +7,7 @@ import com.example.piluli.data.DataStoreManager
 import com.example.piluli.data.MedicineRepository
 import com.example.piluli.data.AppDatabasePiluli
 import com.example.piluli.model.DaySchedule
+import com.example.piluli.reminder.ReminderScheduler
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -25,12 +26,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         get() = _selectedDate.asStateFlow()
 
     // Поток расписания дня на основе выбранной даты
-    val daySchedule: Flow<DaySchedule> = combine(
+    val daySchedule: StateFlow<DaySchedule> = combine(
         settings,
         _selectedDate
     ) { settings, date ->
-        DaySchedule(date, repository.getMedicineForDate(date), settings["pillCount"] ?: 0)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DaySchedule(LocalDate.now(), emptyList()))
+        DaySchedule(date, repository.getMedicineForDate(date), settings["pillCount"] as? Int ?: 0)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DaySchedule(LocalDate.now(), emptyList(), 0))
 
     // Функции для работы с данными
     fun saveSettings(pillCount: Int, currentPill: Int, hour: Int, minute: Int, isLoop: Boolean) {

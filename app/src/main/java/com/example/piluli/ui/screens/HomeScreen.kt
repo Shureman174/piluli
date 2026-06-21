@@ -1,17 +1,23 @@
 package com.example.piluli.ui.screens
 
+import android.app.Application
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.AndroidViewModel
 import java.time.LocalDate
 
-// --- МOCK DATA STRUCTURES (Для демонстрации структуры MVP) ---
+// --- DATA STRUCTURES ---
 data class Medication(
     val name: String,
     val dosage: String,
-    val timeSlot: String // "Утро", "День", "Вечер"
+    val timeSlot: String
 )
 
 data class DaySchedule(
@@ -21,101 +27,85 @@ data class DaySchedule(
     val pillsTakenToday: Int
 )
 
-// --- UI COMPONENTS ---
-    @Composable
-    fun CalendarWidget(selectedDate: LocalDate, onDateSelected: (LocalDate) -> Unit) {
-        Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-                    Text("Неделя", style = MaterialTheme.typography.titleMedium)
-                    IconButton(onClick = { onDateSelected(selectedDate.plusDays(7L)) }) {
-                        Icon(Icons.Default.KeyboardArrowRight, contentDescription = "Next Week")
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Добавьте сюда ваш код для отображения календаря (например, кнопки для дней недели)
-            }
-        }
-    }
-
-    @Composable
-    fun MedicationListView(medications: List<Medication>) {
-        LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            items(medications) { medication ->
-                MedicationItem(medication = medication)
-            }
-        }
-    }
-
-    @Composable
-    fun MedicationItem(medication: Medication) {
-        Card(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            elevation = 2.dp
-        ) {
-            Row(modifier = Modifier.padding(16.dp)) {
-                Text(text = medication.name, style = MaterialTheme.typography.titleMedium)
-                Spacer(modifier = Modifier.weight(1f))
-                Text(text = "${medication.dosage} ${medication.timeSlot}")
-            }
-        }
-    }
-
-class HomeScreen : AppCompatActivity() {
-
-    private val viewModel by viewModels<HomeScreenViewModel>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            HomeScreenContent(viewModel, onDateSelected = { date ->
-                viewModel.setSelectedDate(date)
-            })
-}
-    }
-
-    @Composable
-    fun HomeScreenContent(viewModel: HomeScreenViewModel) {
-        val selectedDate by viewModel.selectedDate.collectAsState(initial = LocalDate.now())
-        val daySchedule by viewModel.daySchedule.collectAsState()
-
-        Scaffold(
-            topBar = { TopAppBar(title = { Text("Приложение для приема лекарств") }) },
-            content = {
-                Column(modifier = Modifier.padding(it)) {
-                    CalendarWidget(selectedDate, onDateSelected = { date ->
-                        viewModel.setSelectedDate(date)
-                    })
-                    MedicationListView(daySchedule?.medications ?: emptyList())
-                }
-            }
-        )
-    }
-
+// --- VIEWMODEL & REPOSITORY ---
 class HomeScreenViewModel(application: Application) : AndroidViewModel(application) {
+    private val appRepository = AppRepository(application)
 
-    private val appRepository by lazy { AppRepository(getApplication()) }
+    private val _selectedDate = mutableStateOf(LocalDate.now())
+    val selectedDate: State<LocalDate> = _selectedDate
 
-    val selectedDate = mutableStateOf(LocalDate.now())
-    val daySchedule = derivedStateOf { appRepository.getDaySchedule(selectedDate.value) }
+    val daySchedule = derivedStateOf { 
+        appRepository.getDaySchedule(_selectedDate.value) ?: DaySchedule(_selectedDate.value, emptyList(), 0, 0)
+    }
 
     fun setSelectedDate(date: LocalDate) {
-        selectedDate.value = date
+        _selectedDate.value = date
     }
 }
 
 class AppRepository(private val application: Application) {
-
-    // Mock data access layer for demonstration purposes
     fun getDaySchedule(date: LocalDate): DaySchedule? {
-        return null // Replace with actual implementation
+        // Mock data
+        return DaySchedule(date, listOf(Medication("Аспирин", "1 таб", "Утро")), 10, 1)
     }
 }
+
+// --- UI COMPONENTS ---
+@Composable
+fun HomeScreen(viewModel: HomeScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+    val selectedDate by viewModel.selectedDate
+    val daySchedule by viewModel.daySchedule
+
+    Scaffold(
+        topBar = {
+            @OptIn(ExperimentalMaterial3Api::class)
+            TopAppBar(title = { Text("Приложение для приема лекарств") })
+        }
+    ) { padding ->
+        Column(modifier = Modifier.padding(padding).padding(16.dp)) {
+            CalendarWidget(selectedDate, onDateSelected = { viewModel.setSelectedDate(it) })
+            Spacer(modifier = Modifier.height(16.dp))
+            MedicationListView(daySchedule.medications)
+        }
+    }
+}
+
+@Composable
+fun CalendarWidget(selectedDate: LocalDate, onDateSelected: (LocalDate) -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                Text("Дата: $selectedDate", style = MaterialTheme.typography.titleMedium)
+                IconButton(onClick = { onDateSelected(selectedDate.plusDays(1)) }) {
+                    Icon(Icons.Default.ArrowForward, contentDescription = "Next Day")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun MedicationListView(medications: List<Medication>) {
+    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+        items(medications) { medication ->
+            MedicationItem(medication = medication)
+        }
+    }
+}
+
+@Composable
+fun MedicationItem(medication: Medication) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(modifier = Modifier.padding(16.dp)) {
+            Text(text = medication.name, style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.weight(1f))
+            Text(text = "${medication.dosage} ${medication.timeSlot}")
+        }
+    }
 }

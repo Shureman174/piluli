@@ -6,22 +6,21 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-import com.example.piluli.model.Medicine
 
 @Dao
 interface MedicineDao {
-    @Query("SELECT * FROM medicine_table")
-    fun getAllMedicines(): Flow<List<Medicine>>
+    @Query("SELECT * FROM medications")
+    fun getAllMedicines(): Flow<List<MedicineEntity>>
 
-    @Query("SELECT * FROM medicine_table WHERE id = :id")
-    fun getMedicineById(id: String): Flow<Medicine>
+    @Query("SELECT * FROM medications WHERE id = :id")
+    fun getMedicineById(id: String): Flow<MedicineEntity>
 
     @Insert
-    suspend fun insertMedicine(medicine: Medicine)
+    suspend fun insertMedicine(medicine: MedicineEntity)
 
     @Update
-    suspend fun updateMedicine(medicine: Medicine)
+    suspend fun updateMedicine(medicine: MedicineEntity)
 
     @Delete
-    suspend fun deleteMedicine(medicine: Medicine)
+    suspend fun deleteMedicine(medicine: MedicineEntity)
 }

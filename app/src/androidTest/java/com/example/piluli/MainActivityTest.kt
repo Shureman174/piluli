@@ -18,7 +18,7 @@ class MainActivityTest {
 
     @Test
     fun testSelectedDateTextView() {
-        onView(withId(R.id.selected_date_text_view)).check(matches(withText("2023-10-01")))
+        onView(withId(R.id.selectedDateTextView)).check(matches(withText("2023-10-01")))
     }
 
     @Test
