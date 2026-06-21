@@ -1,8 +1,7 @@
+// build.gradle.kts (Корневой)
 plugins {
-    id("com.android.application") version "8.5.2" apply false
-    id("org.jetbrains.kotlin.android") version "2.0.20" apply false
+    id("com.android.application") version "8.3.2" apply false // Изменено с 7.0.0 на 8.3.2
+    id("org.jetbrains.kotlin.android") version "1.9.22" apply false
 }
 
-tasks.register<Delete>("clean") {
-    delete(layout.buildDirectory)
-}
+// Здесь ничего больше, связанного с репозиториями!

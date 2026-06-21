@@ -1,0 +1,3 @@
+def function_name():
+  x = 'SHUREMAN'
+// ... existing code ...

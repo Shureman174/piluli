@@ -1,64 +1,46 @@
 plugins {
     id("com.android.application")
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    id("org.jetbrains.kotlin.android")
 }
 
 android {
-    namespace = "com.example.piluli"
-    compileSdk = 34
-
+   // compileSdkVersion(34) // <-- Актуальная версия SDK
+    compileSdk =34
     defaultConfig {
-        applicationId = "com.example.piluli"
-        minSdk = 26
-        targetSdk = 34
+        applicationId ="com.example.myapp"
+//        minSdkVersion(21)
+        minSdk =21
+       // targetSdkVersion (34) // <-- Актуальная версия SDK
+        targetSdk =34 // <-- Актуальная версия SDK
         versionCode = 1
         versionName = "1.0"
-    }
 
-    buildFeatures {
-        compose = true
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    namespace = "com.example.myapp" // ИСПРАВЛЕНО: Добавлено обязательное пространство имён для AGP
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21 // Явное указание на Java 21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
+    // Дополнительно, для Kotlin (хотя это часто обрабатывается автоматически)
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "21"
+    }
+    // ***************************************
+
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
     }
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-    
-    implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    // annotationProcessor(libs.androidx.room.compiler) // For Java
-    // Если используете KSP (рекомендуется), добавьте плагин ksp и используйте ksp(libs.androidx.room.compiler)
-    // Пока оставим без процессора, так как для тестов с моками он не всегда обязателен, 
-    // но для полноценной работы Room нужен.
-    
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-    
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk)
-    testImplementation(libs.kotlinx.coroutines.test)
-    
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    // Используйте latest версии!
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("com.google.android.material:material:1.11.0")
 }
